@@ -1,6 +1,7 @@
 "use server"
 
 import { generateText } from "ai"
+import { google } from "@ai-sdk/google" // ←この1行をすぐ下に追加します
 
 /**
  * AIが猫目線の日記を自動生成する。
@@ -10,7 +11,8 @@ import { generateText } from "ai"
 export async function generateCatDiary(sceneHint: string): Promise<string> {
   try {
     const { text } = await generateText({
-      model: "openai/gpt-5-mini",
+      model: google("gemini-2.5-flash"),
+
       system:
         "あなたは飼い猫です。飼い主がアップロードした写真のシーンをもとに、" +
         "猫の一人称（「ボク」や「ワタシ」など気ままに）で、その日の出来事を日記として書いてください。" +
