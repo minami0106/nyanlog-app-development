@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react"
 import { ImagePlus, Sparkles, Send, Loader2 } from "lucide-react"
-import { supabase } from "@/lib/supabase"
+import { supabase } from "@/lib/supabase-client"
 import { generateCatDiary } from "@/lib/ai"
 import { toast } from "sonner"
 import type { Diary } from "@/lib/types"
@@ -81,28 +81,30 @@ export function DiaryComposer({
 
       const imageUrl = urlData.publicUrl
 
-      // Databaseに保存し、生成された本物のデータを取得する
+      // データベースに保存
       const { data: insertedData, error: dbError } = await supabase
         .from("diaries")
         .insert([
           {
-            profile_id: profileId,
-            image_url: imageUrl,
+            profile_id: profileId, // ここが確実にIDである必要がある
+            image_url: urlData.publicUrl,
             ai_diary_text: diaryText,
             is_favorite: false,
           }
         ])
         .select()
-        .single()
+        .single();
 
-      if (dbError) throw dbError
+      if (dbError) {
+        console.error("保存失敗:", dbError); // ここにエラー詳細が出るはずです
+        throw dbError;
+      }
 
       // 本物のID（背番号）を含んだデータを画面側に渡します
       onCreated(insertedData as Diary)
 
       toast.success("日記をコレクションに保存しました！")
 
-      // フォームを上品にリセット
       setFile(null)
       setPreviewUrl(null)
       setDiaryText("")
@@ -116,7 +118,7 @@ export function DiaryComposer({
   }
 
   return (
-    // 🎨 全体を柔らかな光を纏うような淡いグレージュ（bg-[#f3ede4]/40）に変更
+    // 全体を柔らかな光を纏うような淡いグレージュ（bg-[#f3ede4]/40）に変更
     <div className="rounded-2xl border border-[#e8dfd3] bg-[#f3ede4]/30 p-6 backdrop-blur-sm">
       <div className="mb-5 flex items-center gap-2 text-[#3d3934]">
         <ImagePlus className="h-4 w-4 text-[#8c7e6e]" />
@@ -136,7 +138,7 @@ export function DiaryComposer({
           />
 
           {previewUrl ? (
-            /* 🌟 写真が選ばれている時は、洗練されたスクエアプレビューを表示 */
+            /* 🌟 写真が選ばれている時は、スクエアプレビューを表示 */
             <div className="relative flex flex-col items-center gap-3">
               <div className="relative h-24 w-24 overflow-hidden rounded-md border border-[#e8dfd3] shadow-sm">
                 {/* eslint-disable-next-line @next/next/no-img-element */}

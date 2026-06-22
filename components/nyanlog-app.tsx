@@ -89,7 +89,14 @@ export function NyanlogApp({
       </header>
 
       {/* 日記投稿エリア */}
-      <DiaryComposer profileId={profile.id} onCreated={handleCreated} />
+      {profile ? (
+        <DiaryComposer
+          profileId={profile.id}
+          onCreated={handleCreated}
+        />
+      ) : (
+        <p>ユーザー情報を読み込み中です...</p>
+      )}
 
       <section className="mt-12">
         {/* 🌟 フィルター切り替えタブエリア */}
@@ -98,8 +105,8 @@ export function NyanlogApp({
             <button
               onClick={() => setFilterMode("all")}
               className={`rounded-full px-5 py-2 transition-all duration-300 tracking-wider ${filterMode === "all"
-                  ? "bg-[#8c7e6e] text-white shadow-sm"
-                  : "text-[#6b6155] hover:text-[#3d3934]"
+                ? "bg-[#8c7e6e] text-white shadow-sm"
+                : "text-[#6b6155] hover:text-[#3d3934]"
                 }`}
             >
               ALL
@@ -107,8 +114,8 @@ export function NyanlogApp({
             <button
               onClick={() => setFilterMode("favorites")}
               className={`flex items-center gap-1 rounded-full px-5 py-2 transition-all duration-300 tracking-wider ${filterMode === "favorites"
-                  ? "bg-[#8c7e6e] text-white shadow-sm"
-                  : "text-[#6b6155] hover:text-[#3d3934]"
+                ? "bg-[#8c7e6e] text-white shadow-sm"
+                : "text-[#6b6155] hover:text-[#3d3934]"
                 }`}
             >
               <Heart className={`h-3.5 w-3.5 ${filterMode === 'favorites' ? 'fill-current' : ''}`} />
