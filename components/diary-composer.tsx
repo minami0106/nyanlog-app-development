@@ -87,7 +87,7 @@ export function DiaryComposer({
         .insert([
           {
             profile_id: profileId, // ここが確実にIDである必要がある
-            image_url: urlData.publicUrl,
+            image_url: imageUrl,
             ai_diary_text: diaryText,
             is_favorite: false,
           }
