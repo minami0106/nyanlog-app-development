@@ -1,12 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import { Cat, BookOpen, Heart } from "lucide-react"
+import { Cat, BookOpen, Heart, LogOut } from "lucide-react"
 import { ProfileSetup } from "@/components/profile-setup"
 import { DiaryComposer } from "@/components/diary-composer"
 import { DiaryCard } from "@/components/diary-card"
 import { DiaryViewer } from "@/components/diary-viewer"
 import { toggleFavorite, deleteDiary } from "@/lib/actions"
+import { supabase } from "@/lib/supabase-client"
 import type { Diary, Profile } from "@/lib/types"
 import { toast } from "sonner"
 
@@ -20,9 +21,17 @@ export function NyanlogApp({
   const [profile, setProfile] = useState<Profile | null>(initialProfile)
   const [diaries, setDiaries] = useState<Diary[]>(initialDiaries)
   const [viewing, setViewing] = useState<Diary | null>(null)
-
-  // 🌟 追加：すべて表示するか、お気に入りのみ表示するかを管理するステート（'all' または 'favorites'）
   const [filterMode, setFilterMode] = useState<'all' | 'favorites'>('all')
+
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut()
+      window.location.href = "/login"
+    } catch {
+      toast.error("ログアウトに失敗しました")
+    }
+  }
 
   if (!profile) {
     return <ProfileSetup onCreated={setProfile} />
@@ -61,7 +70,6 @@ export function NyanlogApp({
     }
   }
 
-  // 🌟 追加：選択されたモードに応じて表示する日記をフィルタリングする
   const displayedDiaries = diaries.filter((d) => {
     if (filterMode === "favorites") {
       return d.is_favorite
@@ -70,7 +78,6 @@ export function NyanlogApp({
   })
 
   return (
-    // 🎨 ファチュイテ風ニュアンスカラー：背景をやわらかな淡いシルキーベージュ（bg-[#fcfaf7]）に
     <main className="mx-auto min-h-svh w-full max-w-4xl bg-[#fcfaf7] px-4 pb-16 text-[#4a4641]">
       <header className="flex items-center justify-between py-8">
         <div className="flex items-center gap-3">
@@ -78,13 +85,26 @@ export function NyanlogApp({
             <Cat className="h-5 w-5 text-[#8c7e6e]" aria-hidden="true" />
           </div>
           <div>
-            {/* 🌟 「みなみさんの猫日記」をスッキリ削除し、ブランドロゴのような佇まいに */}
             <h1 className="text-2xl font-light tracking-widest text-[#3d3934] font-serif">Nyanlog</h1>
           </div>
         </div>
-        <div className="flex items-center gap-1.5 rounded-full bg-[#f3ede4] px-4 py-1.5 text-xs tracking-wider text-[#6b6155]">
-          <BookOpen className="h-3.5 w-3.5" aria-hidden="true" />
-          <span className="font-medium">{diaries.length} posts</span>
+
+        {/* 右側のボタンエリア：ログアウトとお知らせバッジを横並びに */}
+        <div className="flex items-center gap-2">
+          {/* 🚪 ログアウトボタン */}
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-1.5 rounded-full bg-[#f3ede4] px-4 py-1.5 text-xs tracking-wider text-[#6b6155] transition-colors duration-200 hover:bg-[#e8dfd3] hover:text-[#3d3934] font-medium"
+          >
+            <LogOut className="h-3.5 w-3.5" aria-hidden="true" />
+            <span>LOGOUT</span>
+          </button>
+
+          {/* 既存の posts カウントバッジ */}
+          <div className="flex items-center gap-1.5 rounded-full bg-[#f3ede4] px-4 py-1.5 text-xs tracking-wider text-[#6b6155]">
+            <BookOpen className="h-3.5 w-3.5" aria-hidden="true" />
+            <span className="font-medium">{diaries.length} posts</span>
+          </div>
         </div>
       </header>
 
@@ -99,7 +119,7 @@ export function NyanlogApp({
       )}
 
       <section className="mt-12">
-        {/* 🌟 フィルター切り替えタブエリア */}
+        {/* フィルター切り替えタブエリア */}
         <div className="mb-6 flex items-center justify-center border-b border-[#e8dfd3] pb-4">
           <div className="flex rounded-full bg-[#f3ede4] p-1 text-xs font-medium">
             <button

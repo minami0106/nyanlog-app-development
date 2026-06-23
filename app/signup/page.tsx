@@ -8,7 +8,7 @@ export default function SignupPage() {
         <AuthLayoutWrapper>
             <AuthForm type="signup" />
             <div className="mt-6 text-center">
-                <a href="/login" className="text-sm text-primary hover:underline">
+                <a href="/login" className="text-sm text-[#7c6e62] hover:underline">
                     ログインはこちら
                 </a>
             </div>
