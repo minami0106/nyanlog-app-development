@@ -8,9 +8,7 @@ Next.jsとSupabaseを用いた猫日記アプリケーションです。
 
 ## サイトURL
 https://nyanlog-iota.vercel.app/login  
-下記アカウントでログイン可能です。  
-メールアドレス：test02@example.com  
-パスワード：222222
+※閲覧用アカウント（メールアドレス：test02@example.com / パスワード：222222）
 
 ## 使用技術
 * フロントエンド: Next.js 15.3, Tailwind CSS

@@ -16,7 +16,7 @@ export default async function Page() {
   const profile = await getProfile();
 
   // 3. プロフィールが存在する場合のみ日記を取得
-  // プロフィールがない場合は空配列を渡すことで、データなし（空の画面）を保証します
+  // プロフィールがない場合は空配列を渡すことで、データなし（空の画面）を保証
   const diaries = profile ? await getDiaries(profile.id) : [];
 
   return (
